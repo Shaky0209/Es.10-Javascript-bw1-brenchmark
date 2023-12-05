@@ -98,6 +98,8 @@ const questions = [
   },
 ];
 
+// VARIABLES DEFINITION
+
 let count = 0;
 let paragraphQ;
 let divContent = document.getElementById("content");
@@ -107,12 +109,14 @@ let labelInput;
 let stepButton;
 let score = 0;
 let letAnswer;
-let correctAnswer;
+let dataAnswer;
+// -----------------------------------------------------
 
-let finito = () => {
+
+let end = () => {
   divContent.innerHTML = "";
   paragraphQ = document.createElement("p");
-  paragraphQ.innerText = "Finito";
+  paragraphQ.innerText = "End of the test! Your score is " + score + " points!!!";
   divContent.appendChild(paragraphQ);
 }
 
@@ -123,22 +127,20 @@ let verifyAnswer = () => {
 
   for (a = 0; a < dataAnswer.length; a++) {
     console.log("verify");
-    
+
     testInput = dataAnswer[a].checked;
     console.log("testInput = " + testInput);
     testInputValue = dataAnswer[a].value;
     console.log("testInputValue = " + testInputValue);
-    console.log("correct_answer = " + questions[a].correct_answer);
-    if (testInput === true) {
-      if (testInputValue === correctAnswer) {
-        console.log("incremento Score");
-
-        score++;
-        console.log(score);
-      }
+    if (testInput === true && testInputValue == (dataAnswer.length - 1)) {
+      console.log(true);
+      console.log("incremento Score");
+      score++;
+      console.log(score);
     }
   }
 }
+
 
 
 let branchmark = () => {
@@ -180,7 +182,7 @@ let branchmark = () => {
 
     if (count === questions.length) {
       count = 0;
-      finito();
+      end();
     }
     stepButton.addEventListener("click", verifyAnswer);
     stepButton.addEventListener("click", branchmark);
