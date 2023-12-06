@@ -103,13 +103,13 @@ const questions = [
 let count = 0;
 let paragraphQ;
 let divContent = document.getElementById("content");
-let fullAnswers = [];
+let wrongAnswers = [];
 let answerInput;
 let labelInput;
 let stepButton;
 let score = 0;
-let letAnswer;
 let dataAnswer;
+let correctAnswer;
 // -----------------------------------------------------
 
 
@@ -132,7 +132,7 @@ let verifyAnswer = () => {
     console.log("testInput = " + testInput);
     testInputValue = dataAnswer[a].value;
     console.log("testInputValue = " + testInputValue);
-    if (testInput === true && testInputValue == (dataAnswer.length - 1)) {
+    if (testInput === true && testInputValue == "true") {
       console.log(true);
       console.log("incremento Score");
       score++;
@@ -143,50 +143,63 @@ let verifyAnswer = () => {
 
 
 
+let createPageElements = () => {
+
+  for (i = 0; i < wrongAnswers.length; i++) {
+    answerInput = document.createElement("input");
+    answerInput.setAttribute("type", "radio");
+    answerInput.setAttribute("name", "answer");
+    answerInput.setAttribute("id", "answer" + i);
+    answerInput.setAttribute("value", false);
+    labelInput = document.createElement("label");
+    labelInput.setAttribute("for", "answer" + i);
+    labelInput.value = wrongAnswers[i];
+    labelInput.innerText = wrongAnswers[i];
+    toDown = document.createElement("br");
+    divContent.appendChild(answerInput);
+    divContent.appendChild(labelInput);
+    divContent.appendChild(toDown);
+
+  }
+  answerInput = document.createElement("input");
+  answerInput.setAttribute("type", "radio");
+  answerInput.setAttribute("name", "answer");
+  answerInput.setAttribute("id", "answer" + (wrongAnswers.length));
+  answerInput.setAttribute("value", true);
+  labelInput = document.createElement("label");
+  labelInput.setAttribute("for", "answer" + (wrongAnswers.length));
+  labelInput.value = correctAnswer;
+  labelInput.innerText = correctAnswer;
+  toDown = document.createElement("br");
+  divContent.appendChild(answerInput);
+  divContent.appendChild(labelInput);
+  divContent.appendChild(toDown);
+}
+
 let branchmark = () => {
 
   divContent.innerHTML = "";
   paragraphQ = document.createElement("p");
   paragraphQ.innerText = questions[count].question;
   divContent.appendChild(paragraphQ);
-  fullAnswers = questions[count].incorrect_answers;
-  fullAnswers.push(questions[count].correct_answer);
+  wrongAnswers = questions[count].incorrect_answers;
+  correctAnswer = questions[count].correct_answer;
 
-  for (i = 0; i < fullAnswers.length; i++) {
+  createPageElements();
 
-    for (i = 0; i < fullAnswers.length; i++) {
-      answerInput = document.createElement("input");
-      answerInput.setAttribute("type", "radio");
-      answerInput.setAttribute("name", "answer");
-      answerInput.setAttribute("id", "answer" + i);
-      answerInput.setAttribute("value", i);
-      labelInput = document.createElement("label");
-      labelInput.setAttribute("for", "answer" + i);
-      labelInput.value = fullAnswers[i];
-      labelInput.innerText = fullAnswers[i];
-      toDown = document.createElement("br");
-      divContent.appendChild(answerInput);
-      divContent.appendChild(labelInput);
-      divContent.appendChild(toDown);
+  stepButton = document.createElement("button");
+  stepButton.innerText = "Continue";
+  divContent.appendChild(stepButton);
 
-    }
+  count++
 
-    stepButton = document.createElement("button");
-    stepButton.innerText = "Continue";
-    divContent.appendChild(stepButton);
-
-
-
-
-    count++
-
-    if (count === questions.length) {
-      count = 0;
-      end();
-    }
-    stepButton.addEventListener("click", verifyAnswer);
-    stepButton.addEventListener("click", branchmark);
+  if (count === questions.length) {
+    count = 0;
+    end();
   }
+
+  stepButton.addEventListener("click", verifyAnswer);
+  stepButton.addEventListener("click", branchmark);
 }
 
 branchmark();
