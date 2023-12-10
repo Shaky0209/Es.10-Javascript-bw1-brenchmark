@@ -134,6 +134,11 @@ let testInputValue;
 let currentQuestion;
 let totalQuestion;
 let footQuestion;
+let casualCont = [];
+let allAnswers;
+let singleAnswer = {};
+let nX;
+let outAnswers = []
 // -----------------------
 nodeWelcome.setAttribute("id", "welcome");
 node.appendChild(nodeWelcome);
@@ -189,36 +194,61 @@ let timer = () => {
       branchmark();
     }
 
-    if(shutDownTime === 0 && count === questions.length){
+    if (shutDownTime === 0 && count === questions.length) {
       clearInterval(time);
     }
   }, 1000);
 }
 
+let randomAnswers = () => {
+  casualCont = [];
+  allAnswers = [];
+  outAnswers = [];
+
+  for (y = 0; y < wrongAnswers.length; y++) {
+    singleAnswer = { label: wrongAnswers[y], value: "false" };
+    allAnswers.push(singleAnswer);
+  }
+  singleAnswer = { label: correctAnswer, value: "true" };
+  allAnswers.push(singleAnswer);
+
+  for (z = 0; z < allAnswers.length; z++) {
+    nX = Math.floor(Math.random() * allAnswers.length);
+    casualCont.push(nX);
+
+    if (casualCont.length > 1) {
+
+      for (x = (casualCont.length - 2); x >= 0; x--) {
+
+        if (nX == casualCont[x]) {
+          casualCont.splice(x, 1);
+          z--
+          x++
+        }
+      }
+    }
+   
+  }
+  for(w = 0; w < allAnswers.length; w++){
+    outAnswers.splice(casualCont[w], 0, allAnswers[w]);
+  }
+}
+
 let createElement = () => {
 
-  for (i = 0; i < wrongAnswers.length; i++) {
+  for (i = 0; i < outAnswers.length; i++) {
     answerInput = document.createElement("input");
     answerInput.setAttribute("type", "radio");
-    answerInput.setAttribute("value", "false");
+    answerInput.setAttribute("name", "answer");
+    answerInput.setAttribute("value", outAnswers[i].value);
     inputLabel = document.createElement("label");
     inputLabel.setAttribute("name", "answer");
-    inputLabel.innerText = wrongAnswers[i];
+    inputLabel.innerText = outAnswers[i].label;
     toDown = document.createElement("br");
     questionContent.appendChild(answerInput);
     questionContent.appendChild(inputLabel);
     questionContent.appendChild(toDown);
   }
-  answerInput = document.createElement("input");
-  answerInput.setAttribute("type", "radio");
-  answerInput.setAttribute("value", "true");
-  inputLabel = document.createElement("label");
-  inputLabel.setAttribute("name", "answer");
-  inputLabel.innerText = correctAnswer;
-  toDown = document.createElement("br");
-  questionContent.appendChild(answerInput);
-  questionContent.appendChild(inputLabel);
-  questionContent.appendChild(toDown);
 
   stepButton = document.createElement("button");
   stepButton.setAttribute("id", "stepButton");
@@ -256,7 +286,7 @@ let verifyAnswer = () => {
 let end = () => {
 
   shutDownTime = 1;
-  if(shutDownTime <= 1){
+  if (shutDownTime <= 1) {
     timeDisplay.innerHTML = "";
   }
   footQuestion.innerHTML = "";
@@ -273,26 +303,29 @@ let branchmark = () => {
   if (count === questions.length) {
     end();
   } else {
-    if(footQuestion){
+    if (footQuestion) {
       node.removeChild(footQuestion);
     }
 
     questionContent.innerHTML = "";
     shutDownTime = 60;
 
+    
     questionContent = document.createElement("div");
     questionContent.setAttribute("id", "questionContent");
     node.appendChild(questionContent);
-
+    
     questionParagraph = document.createElement("p");
     questionParagraph.setAttribute("id", "question");
     questionParagraph.innerText = questions[count].question;
     questionContent.appendChild(questionParagraph);
     wrongAnswers = questions[count].incorrect_answers;
     correctAnswer = questions[count].correct_answer;
-
+    
     count++
 
+    randomAnswers();
+    
     createElement();
 
     stepButton.addEventListener("click", verifyAnswer);
