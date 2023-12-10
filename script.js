@@ -98,108 +98,269 @@ const questions = [
   },
 ];
 
+// -----------------------
 // VARIABLES DEFINITION
-
+// -----------------------
+let node = document.getElementById("content");
+let nodeWelcome = document.createElement("div");
+let welcomeFirst;
+let welcomeSecond;
+let titleInst;
+let pInstructions1;
+let pInstructions2;
+let instructionsUL;
+let instructionLi;
+let checkBox;
+let labelCheck;
+let labelText;
+let checkboxText;
+let footer;
+let startButton;
+let checkContent;
 let count = 0;
-let paragraphQ;
-let divContent = document.getElementById("content");
 let wrongAnswers = [];
+let correctAnswer;
 let answerInput;
-let labelInput;
 let stepButton;
+let shutDownTime;
+let time;
+let timeDisplay;
+let cicle = 0;
+let questionContent = document.createElement("div");
 let score = 0;
 let dataAnswer;
-let correctAnswer;
-// -----------------------------------------------------
+let testInput;
+let testInputValue;
+let currentQuestion;
+let totalQuestion;
+let footQuestion;
+// -----------------------
+nodeWelcome.setAttribute("id", "welcome");
+node.appendChild(nodeWelcome);
 
-
-let end = () => {
-  divContent.innerHTML = "";
-  paragraphQ = document.createElement("p");
-  paragraphQ.innerText = "End of the test! Your score is " + score + " points!!!";
-  divContent.appendChild(paragraphQ);
+// ----------------------
+// FUNCTION DEFINITION
+// ----------------------
+let buttonControl = () => {
+  startButton.setAttribute("value", "true");
+  checkControl();
 }
 
+let checkControl = () => {
 
-let verifyAnswer = () => {
-
-  dataAnswer = document.getElementsByTagName("input");
-
-  for (a = 0; a < dataAnswer.length; a++) {
-    console.log("verify");
-
-    testInput = dataAnswer[a].checked;
-    console.log("testInput = " + testInput);
-    testInputValue = dataAnswer[a].value;
-    console.log("testInputValue = " + testInputValue);
-    if (testInput === true && testInputValue == "true") {
-      console.log(true);
-      console.log("incremento Score");
-      score++;
-      console.log(score);
-    }
+  if (checkBox.checked && startButton.value) {
+    branchmark();
+    timer();
+    removeWelcome()
+  } else {
+    startButton.setAttribute("value", "false");
   }
 }
 
+let removeWelcome = () => {
+  if (cicle < 1) {
+    nodeWelcome.innerHTML = "";
+    cicle++
+  }
+}
 
+let timer = () => {
 
-let createPageElements = () => {
+  shutDownTime = 60;
+  let time = setInterval(function () {
+
+    if (timeDisplay) {
+      node.removeChild(timeDisplay);
+    }
+
+    shutDownTime--;
+
+    timeDisplay = document.createElement("p");
+    timeDisplay.setAttribute("id", "timeDisplay");
+
+    timeDisplay.appendChild(document.createTextNode(shutDownTime));
+    node.appendChild(timeDisplay);
+
+    if (shutDownTime < 11) {
+      timeDisplay.style.color = "red";
+    }
+
+    if (shutDownTime === 0) {
+      branchmark();
+    }
+
+    if(shutDownTime === 0 && count === questions.length){
+      clearInterval(time);
+    }
+  }, 1000);
+}
+
+let createElement = () => {
 
   for (i = 0; i < wrongAnswers.length; i++) {
     answerInput = document.createElement("input");
     answerInput.setAttribute("type", "radio");
-    answerInput.setAttribute("name", "answer");
-    answerInput.setAttribute("id", "answer" + i);
-    answerInput.setAttribute("value", false);
-    labelInput = document.createElement("label");
-    labelInput.setAttribute("for", "answer" + i);
-    labelInput.value = wrongAnswers[i];
-    labelInput.innerText = wrongAnswers[i];
+    answerInput.setAttribute("value", "false");
+    inputLabel = document.createElement("label");
+    inputLabel.setAttribute("name", "answer");
+    inputLabel.innerText = wrongAnswers[i];
     toDown = document.createElement("br");
-    divContent.appendChild(answerInput);
-    divContent.appendChild(labelInput);
-    divContent.appendChild(toDown);
-
+    questionContent.appendChild(answerInput);
+    questionContent.appendChild(inputLabel);
+    questionContent.appendChild(toDown);
   }
   answerInput = document.createElement("input");
   answerInput.setAttribute("type", "radio");
-  answerInput.setAttribute("name", "answer");
-  answerInput.setAttribute("id", "answer" + (wrongAnswers.length));
-  answerInput.setAttribute("value", true);
-  labelInput = document.createElement("label");
-  labelInput.setAttribute("for", "answer" + (wrongAnswers.length));
-  labelInput.value = correctAnswer;
-  labelInput.innerText = correctAnswer;
+  answerInput.setAttribute("value", "true");
+  inputLabel = document.createElement("label");
+  inputLabel.setAttribute("name", "answer");
+  inputLabel.innerText = correctAnswer;
   toDown = document.createElement("br");
-  divContent.appendChild(answerInput);
-  divContent.appendChild(labelInput);
-  divContent.appendChild(toDown);
-}
-
-let branchmark = () => {
-
-  divContent.innerHTML = "";
-  paragraphQ = document.createElement("p");
-  paragraphQ.innerText = questions[count].question;
-  divContent.appendChild(paragraphQ);
-  wrongAnswers = questions[count].incorrect_answers;
-  correctAnswer = questions[count].correct_answer;
-
-  createPageElements();
+  questionContent.appendChild(answerInput);
+  questionContent.appendChild(inputLabel);
+  questionContent.appendChild(toDown);
 
   stepButton = document.createElement("button");
+  stepButton.setAttribute("id", "stepButton");
   stepButton.innerText = "Continue";
-  divContent.appendChild(stepButton);
-
-  count++
-
-  if (count === questions.length) {
-    count = 0;
-    end();
-  }
-
-  stepButton.addEventListener("click", verifyAnswer);
-  stepButton.addEventListener("click", branchmark);
+  questionContent.appendChild(stepButton);
+  dataAnswer = document.getElementsByTagName("input");
+  footQuestion = document.createElement("div");
+  footQuestion.setAttribute("id", "footQuestion");
+  node.appendChild(footQuestion);
+  currentQuestion = document.createElement("p");
+  totalQuestion = document.createElement("p");
+  totalQuestion.setAttribute("id", "totalQuestion");
+  currentQuestion.innerText = "QUESTION  " + count;
+  totalQuestion.innerText = "  /  " + questions.length;
+  footQuestion.appendChild(currentQuestion);
+  footQuestion.appendChild(totalQuestion);
 }
 
-branchmark();
+let verifyAnswer = () => {
+
+  for (a = 0; a < dataAnswer.length; a++) {
+
+    testInput = dataAnswer[a].checked;
+    testInputValue = dataAnswer[a].value;
+    if (testInput === true && testInputValue == "true") {
+      score++;
+    }
+
+  }
+  if (count === questions.length) {
+    end();
+  }
+}
+
+let end = () => {
+
+  shutDownTime = 1;
+  if(shutDownTime <= 1){
+    timeDisplay.innerHTML = "";
+  }
+  footQuestion.innerHTML = "";
+  questionContent.innerHTML = "";
+  finalMess = document.createElement("p")
+  finalMess.setAttribute("id", "finalMess");
+  finalMess.innerText = "End of the test! Your score is " + score + " points!!!";
+  questionContent.appendChild(finalMess);
+}
+
+// --------------------------------------------------------------------------------------------
+let branchmark = () => {
+
+  if (count === questions.length) {
+    end();
+  } else {
+    if(footQuestion){
+      node.removeChild(footQuestion);
+    }
+
+    questionContent.innerHTML = "";
+    shutDownTime = 60;
+
+    questionContent = document.createElement("div");
+    questionContent.setAttribute("id", "questionContent");
+    node.appendChild(questionContent);
+
+    questionParagraph = document.createElement("p");
+    questionParagraph.setAttribute("id", "question");
+    questionParagraph.innerText = questions[count].question;
+    questionContent.appendChild(questionParagraph);
+    wrongAnswers = questions[count].incorrect_answers;
+    correctAnswer = questions[count].correct_answer;
+
+    count++
+
+    createElement();
+
+    stepButton.addEventListener("click", verifyAnswer);
+    stepButton.addEventListener("click", branchmark);
+  }
+}
+
+// ----------------------------------------------------------------------------------------------
+
+let welcomePage = () => {
+
+  welcomeFirst = document.createElement("p");
+  welcomeSecond = document.createElement("p");
+  welcomeFirst.setAttribute("id", "welcomeFirst");
+  welcomeSecond.setAttribute("id", "welcomeSecond");
+  welcomeFirst.innerText = "Welcome to";
+  welcomeSecond.innerText = "your exam"
+  nodeWelcome.appendChild(welcomeFirst);
+  nodeWelcome.appendChild(welcomeSecond);
+
+  titleInst = document.createElement("h4");
+  titleInst.setAttribute("id", "titleInst");
+  titleInst.innerText = "instructions"
+  nodeWelcome.appendChild(titleInst);
+
+  pInstructions1 = document.createElement("p");
+  pInstructions1.setAttribute("class", "pInstructions");
+  pInstructions1.innerText = "We don't expect most ingineers to know the answers to all fof theese"
+  nodeWelcome.appendChild(pInstructions1);
+  pInstructions2 = document.createElement("p");
+  pInstructions2.setAttribute("class", "pInstructions");
+  pInstructions2.innerText = "questions, so don't worry if you're unsure of a few of them."
+  nodeWelcome.appendChild(pInstructions2);
+
+  instructionsUL = document.createElement("ul");
+  nodeWelcome.appendChild(instructionsUL);
+  instructionLi = document.createElement("li");
+  instructionLi.innerText = "Each question is timed and can only be answered once";
+  instructionsUL.appendChild(instructionLi);
+  instructionLi = document.createElement("li");
+  instructionLi.innerText = "Changing broeser tab or opening other windows will invalidate the question.";
+  instructionsUL.appendChild(instructionLi);
+  instructionLi = document.createElement("li");
+  instructionLi.innerText = "This exam will take approx. 0-5 minutes.";
+  instructionsUL.appendChild(instructionLi);
+
+  footer = document.createElement("div");
+  footer.setAttribute("id", "divFoot");
+  nodeWelcome.appendChild(footer);
+
+  checkContent = document.createElement("div");
+  checkContent.setAttribute("id", "checkContent");
+  footer.appendChild(checkContent);
+  checkBox = document.createElement("input");
+  checkBox.setAttribute("type", "checkbox");
+  checkBox.setAttribute("id", "checkbox");
+  checkboxText = document.createElement("p");
+  checkboxText.innerText = "I promise to answer myself whithout help from anyone";
+  checkContent.appendChild(checkBox);
+  checkContent.appendChild(checkboxText);
+
+  startButton = document.createElement("button");
+  startButton.setAttribute("value", "false");
+  startButton.innerText = "PROCEED";
+  footer.appendChild(startButton);
+}
+
+welcomePage();
+
+startButton.addEventListener("click", buttonControl);
+
