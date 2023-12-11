@@ -154,7 +154,7 @@ let buttonControl = () => {
 let checkControl = () => {
 
   if (checkBox.checked && startButton.value) {
-    branchmark();
+    brenchmark();
     timer();
     removeWelcome()
   } else {
@@ -191,7 +191,7 @@ let timer = () => {
     }
 
     if (shutDownTime === 0) {
-      branchmark();
+      brenchmark();
     }
 
     if (shutDownTime === 0 && count === questions.length) {
@@ -298,7 +298,7 @@ let end = () => {
 }
 
 // --------------------------------------------------------------------------------------------
-let branchmark = () => {
+let brenchmark = () => {
 
   if (count === questions.length) {
     end();
@@ -317,7 +317,7 @@ let branchmark = () => {
     
     questionParagraph = document.createElement("p");
     questionParagraph.setAttribute("id", "question");
-    questionParagraph.innerText = questions[count].question;
+    questionParagraph.innerText = questions[count].question.replace("&#039;","'");
     questionContent.appendChild(questionParagraph);
     wrongAnswers = questions[count].incorrect_answers;
     correctAnswer = questions[count].correct_answer;
@@ -329,7 +329,7 @@ let branchmark = () => {
     createElement();
 
     stepButton.addEventListener("click", verifyAnswer);
-    stepButton.addEventListener("click", branchmark);
+    stepButton.addEventListener("click", brenchmark);
   }
 }
 
