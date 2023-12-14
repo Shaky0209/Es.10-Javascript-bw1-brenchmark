@@ -164,7 +164,7 @@ let checkControl = () => {
 
 let removeWelcome = () => {
   if (cicle < 1) {
-    nodeWelcome.innerHTML = "";
+    node.removeChild(nodeWelcome);
     cicle++
   }
 }
@@ -307,7 +307,10 @@ let brenchmark = () => {
       node.removeChild(footQuestion);
     }
 
-    questionContent.innerHTML = "";
+    if(count > 0){
+      console.log(count);
+      node.removeChild(questionContent);
+    }
     shutDownTime = 60;
 
     
